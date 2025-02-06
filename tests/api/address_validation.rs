@@ -16,7 +16,7 @@ fn test_invalid_addresses() {
         "",
         "0x",
         "0x123",
-        "123456", 
+        "123456",
         "0xXYZabc",
         &long_zeros,
         &long_as,

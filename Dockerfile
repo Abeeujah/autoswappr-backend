@@ -14,7 +14,7 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 # Build project
-RUN cargo build --release --bin server
+RUN cargo install sqlx-cli --features postgres && sqlx db setup && cargo build --release --bin server
 
 FROM debian:bookworm-slim AS runtime
 

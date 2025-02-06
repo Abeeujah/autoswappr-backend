@@ -22,7 +22,7 @@ pub async fn handle_auto_swap(
 
     let swap_preferences = sqlx::query!(
         r#"
-        SELECT s.to_token, sf.percentage
+        SELECT s.to_token, sf.swap_amount
         FROM swap_subscription s
         INNER JOIN swap_subscription_from_token sf ON s.wallet_address = sf.wallet_address
         WHERE s.wallet_address = $1 AND sf.from_token = $2
@@ -39,9 +39,11 @@ pub async fn handle_auto_swap(
         None => return Err(StatusCode::INTERNAL_SERVER_ERROR),
     };
 
-    let swap_amount: u128 = (value_received * preference.percentage as i64 / 100)
-        .try_into()
-        .unwrap();
+    let swap_amount: u128 = if value_received < preference.swap_amount {
+        value_received as u128
+    } else {
+        preference.swap_amount as u128
+    };
     let swap_amount = swap_amount * DECIMALS;
 
     let token0 = Felt::from_hex(&token_from).unwrap();

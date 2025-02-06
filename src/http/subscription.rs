@@ -21,14 +21,17 @@ pub async fn create_subscription(
         wallet_address,
         to_token,
         from_token,
-        percentage,
+        swap_amount,
     } = payload;
 
-    if from_token.len() != percentage.len() {
+    if swap_amount <= 0 {
         return Err(StatusCode::BAD_REQUEST);
     }
 
-    if !is_valid_address(&to_token) || !is_valid_address(&wallet_address) {
+    if !is_valid_address(&from_token)
+        || !is_valid_address(&to_token)
+        || !is_valid_address(&wallet_address)
+    {
         return Err(StatusCode::BAD_REQUEST);
     }
 
@@ -53,21 +56,19 @@ pub async fn create_subscription(
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    for (token, percentage) in from_token.iter().zip(percentage.iter()) {
-        sqlx::query!(
-            r#"
+    sqlx::query!(
+        r#"
             INSERT INTO swap_subscription_from_token
-            (wallet_address, from_token, percentage)
+            (wallet_address, from_token, swap_amount)
             VALUES ($1, $2, $3)
-            "#,
-            wallet_address,
-            token,
-            percentage,
-        )
-        .execute(&mut *tx)
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    }
+        "#,
+        wallet_address,
+        from_token,
+        swap_amount,
+    )
+    .execute(&mut *tx)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     tx.commit()
         .await
@@ -97,7 +98,7 @@ pub async fn get_subscription(
         SELECT
             swap_subscription_from_token.from_token AS from_token,
             swap_subscription.to_token AS to_token,
-            swap_subscription_from_token.percentage AS percentage,
+            swap_subscription_from_token.swap_amount AS swap_amount,
             swap_subscription.is_active AS is_active,
             TO_CHAR(swap_subscription_from_token.created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
         FROM swap_subscription_from_token
@@ -118,7 +119,7 @@ pub async fn get_subscription(
             .map(|row| SubscriptionData {
                 from_token: row.from_token,
                 to_token: row.to_token,
-                percentage: row.percentage,
+                swap_amount: row.swap_amount,
                 is_active: row.is_active,
                 created_at: row.created_at,
             })

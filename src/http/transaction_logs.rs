@@ -10,7 +10,6 @@ pub struct TransactionLogPayload {
     pub wallet_address: String,
     pub from_token: String,
     pub to_token: String,
-    pub percentage: u16,
     pub amount_from: u64,
     pub amount_to: u64,
 }
@@ -23,7 +22,6 @@ pub async fn log_transaction_to_db(
         &payload.wallet_address,
         &payload.from_token,
         &payload.to_token,
-        payload.percentage,
         payload.amount_from,
         payload.amount_to,
         &state.db.pool,

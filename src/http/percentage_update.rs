@@ -9,13 +9,10 @@ pub async fn update_percentage(
     let UpdatePercentageRequest {
         wallet_address,
         from_token,
-        percentage,
+        swap_amount,
     } = payload;
 
     if !is_valid_address(&wallet_address) || !is_valid_address(&from_token) {
-        return Err(StatusCode::BAD_REQUEST);
-    }
-    if percentage <= 0 || percentage > 100 {
         return Err(StatusCode::BAD_REQUEST);
     }
 
@@ -23,10 +20,10 @@ pub async fn update_percentage(
     let result = sqlx::query!(
         r#"
         UPDATE swap_subscription_from_token
-        SET percentage = $1, updated_at = NOW()
+        SET swap_amount = $1, updated_at = NOW()
         WHERE wallet_address = $2 AND from_token = $3
         "#,
-        percentage,
+        swap_amount,
         wallet_address,
         from_token
     )

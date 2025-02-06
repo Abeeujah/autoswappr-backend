@@ -25,7 +25,7 @@ async fn test_unsubscribe_success() {
 
     sqlx::query!(
         r#"
-        INSERT INTO swap_subscription_from_token (wallet_address, from_token, percentage)
+        INSERT INTO swap_subscription_from_token (wallet_address, from_token, swap_amount)
         VALUES ($1, $2, $3)
         ON CONFLICT (wallet_address, from_token) DO NOTHING
         "#,

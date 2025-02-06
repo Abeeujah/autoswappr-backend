@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE swap_subscription_from_token\n        SET swap_amount = $1, updated_at = NOW()\n        WHERE wallet_address = $2 AND from_token = $3\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "340ca997cd803e1d34b071ba8aaf542fdda14bd9b10cd405c87f59c5841bf5b4"
+}

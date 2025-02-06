@@ -7,12 +7,7 @@ use sqlx::PgPool;
 
 use crate::helpers::*;
 
-async fn setup_test_data(
-    pool: &PgPool,
-    wallet_address: &str,
-    from_token: &str,
-    initial_percentage: i16,
-) {
+async fn setup_test_data(pool: &PgPool, wallet_address: &str, from_token: &str, swap_amount: i64) {
     sqlx::query!(
         r#"
         INSERT INTO swap_subscription (wallet_address, to_token, is_active)
@@ -30,12 +25,12 @@ async fn setup_test_data(
     sqlx::query!(
         r#"
             INSERT INTO swap_subscription_from_token
-            (wallet_address, from_token, percentage)
+            (wallet_address, from_token, swap_amount)
             VALUES ($1, $2, $3)
             "#,
         wallet_address,
         from_token,
-        initial_percentage,
+        swap_amount,
     )
     .execute(pool)
     .await
@@ -57,7 +52,7 @@ async fn test_update_percentage_success() {
     let payload = json!({
         "wallet_address": wallet_address,
         "from_token": from_token,
-        "percentage": 75
+        "swap_amount": 75
     });
 
     let req = Request::builder()
@@ -72,7 +67,7 @@ async fn test_update_percentage_success() {
 
     let updated = sqlx::query!(
         r#"
-        SELECT percentage
+        SELECT swap_amount
         FROM swap_subscription_from_token
         WHERE wallet_address = $1 AND from_token = $2
         "#,
@@ -83,7 +78,7 @@ async fn test_update_percentage_success() {
     .await
     .unwrap();
 
-    assert_eq!(updated.percentage, 75);
+    assert_eq!(updated.swap_amount, 75);
 }
 
 #[tokio::test]
@@ -95,7 +90,7 @@ async fn test_update_percentage_not_found() {
     let payload = json!({
         "wallet_address": "0x1dcb0e5a46ae5a8f49fd948ebb0dcbc96d909ea35c5b312bc719bff47cb8720f",
         "from_token": "0xed0fd074f3acf231815432ad61dcce077a488fbd05a27e37471de432a32c1656",
-        "percentage": 75
+        "swap_amount": 75
     });
 
     let req = Request::builder()

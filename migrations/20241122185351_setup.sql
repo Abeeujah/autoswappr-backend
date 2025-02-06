@@ -33,7 +33,7 @@ create index on swap_subscription(to_token);
 create table swap_subscription_from_token(
     wallet_address varchar(66) not null references swap_subscription(wallet_address) on delete cascade,
     from_token varchar(66) not null check (from_token ~ '^0x[a-fA-F0-9]{64}$'),
-    percentage smallint not null check (percentage between 1 and 100),
+    swap_amount bigint not null check (swap_amount > 0),
     created_at timestamptz not null default now(),
     updated_at timestamptz,
     primary key (wallet_address, from_token)
@@ -48,7 +48,6 @@ create table transactions_log(
     wallet_address varchar(66) not null check (wallet_address ~ '^0x[a-fA-F0-9]{64}$'),
     from_token varchar(66) not null check (from_token ~ '^0x[a-fA-F0-9]{64}$'),
     to_token varchar(66) not null check (to_token ~ '^0x[a-fA-F0-9]{64}$'),
-    percentage smallint not null check (percentage between 1 and 100),
     amount_from bigint not null check (amount_from > 0),
     amount_to bigint not null check (amount_to > 0),
     created_at timestamptz not null default now(),

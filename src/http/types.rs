@@ -22,7 +22,6 @@ pub struct ActivityLogData {
     pub wallet_address: String,
     pub from_token: String,
     pub to_token: String,
-    pub percentage: i16,
     pub amount_from: i64,
     pub amount_to: i64,
     pub created_at: String,
@@ -38,8 +37,8 @@ pub struct ActivityLogGetResponse {
 pub struct CreateSubscriptionRequest {
     pub wallet_address: String,
     pub to_token: String,
-    pub from_token: Vec<String>,
-    pub percentage: Vec<i16>,
+    pub from_token: String,
+    pub swap_amount: i64,
 }
 
 #[derive(Debug, Serialize)]
@@ -64,7 +63,7 @@ pub struct SubscriptionData {
     pub to_token: String,
     pub is_active: bool,
     pub from_token: String,
-    pub percentage: i16,
+    pub swap_amount: i64,
     pub created_at: String,
 }
 
@@ -124,7 +123,7 @@ impl<'de> Deserialize<'de> for TimeStamptz {
 pub struct UpdatePercentageRequest {
     pub wallet_address: String,
     pub from_token: String,
-    pub percentage: i16,
+    pub swap_amount: i64,
 }
 
 #[derive(Debug, Serialize)]

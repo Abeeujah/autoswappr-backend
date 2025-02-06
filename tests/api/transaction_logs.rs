@@ -11,7 +11,6 @@ async fn test_transaction_log_service_with_valid_payload() {
     let address = "0xdbfcab49bd9bced4636b04319d71fbd0d84bde78a1d38e9e2fc391e83187c1c3";
     let from_token = "0x07ab8059db97aab8ced83b37a1d60b8eef540f6cdc96acc153d583a59bedd125";
     let to_token = "0x40ca979f20ed76f960dc719457eaf0cef3b2c3932d58435b9192a58bc56c1e40";
-    let percentage = 50;
     let amount_from = 4000;
     let amount_to = 2000;
 
@@ -20,7 +19,6 @@ async fn test_transaction_log_service_with_valid_payload() {
         address,
         from_token,
         to_token,
-        percentage,
         amount_from,
         amount_to,
         &app.db.pool,
@@ -30,7 +28,6 @@ async fn test_transaction_log_service_with_valid_payload() {
     assert_eq!(tx.wallet_address, address);
     assert_eq!(tx.from_token, from_token);
     assert_eq!(tx.to_token, to_token);
-    assert_eq!(tx.percentage, percentage);
     assert_eq!(tx.amount_from, amount_from);
     assert_eq!(tx.amount_to, amount_to);
 }
@@ -40,7 +37,6 @@ async fn test_transaction_log_service_with_invalid_address() {
     let address = "0xF1d2eD1a7d9A2aE3c467Bc72C5dF";
     let from_token = "0xF1d2eD1a7d9A2aE3c467Bc2Cojojoj5dF";
     let to_token = "0xF1d2eD1a7d9A2aE3c467Bc72C5iohhosdF";
-    let percentage = 50;
     let amount_from = 4000;
     let amount_to = 2000;
 
@@ -49,7 +45,6 @@ async fn test_transaction_log_service_with_invalid_address() {
         address,
         from_token,
         to_token,
-        percentage,
         amount_from,
         amount_to,
         &app.db.pool,
@@ -73,7 +68,6 @@ async fn test_transaction_log_request_with_valid_payload() {
                         "wallet_address": "0xdbfcab49bd9bced4636b04319d71fbd0d84bde78a1d38e9e2fc391e83187c1c3",
                         "from_token": "0x07ab8059db97aab8ced83b37a1d60b8eef540f6cdc96acc153d583a59bedd125",
                         "to_token": "0x40ca979f20ed76f960dc719457eaf0cef3b2c3932d58435b9192a58bc56c1e40",
-                        "percentage": 50,
                         "amount_from": 5000,
                         "amount_to": 4000
                     })
@@ -105,7 +99,6 @@ async fn test_transaction_log_request_with_invalid_payload() {
                         "wallet_address": "0xF1d2eD1a7d9A2aE3c467Bc726946e2C5dF", // invalid data
                         "from_token": "0x07ab8059db97aab8ced83b37a1d60b8eef540f6cdc96acc153d583a59bedd125",
                         "to_token": "0xdbfcab49bd9bced4636b04319d71fbd0d84bde78a1d38e9e2fc391e83187c1c3",
-                        "percentage": 500, // invalid data
                         "amount_from": 5000,
                         "amount_to": 4000
                     })

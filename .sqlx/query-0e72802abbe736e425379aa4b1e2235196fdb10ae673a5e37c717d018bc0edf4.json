@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT s.to_token, sf.swap_amount\n        FROM swap_subscription s\n        INNER JOIN swap_subscription_from_token sf ON s.wallet_address = sf.wallet_address\n        WHERE s.wallet_address = $1 AND sf.from_token = $2\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "to_token",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "swap_amount",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "0e72802abbe736e425379aa4b1e2235196fdb10ae673a5e37c717d018bc0edf4"
+}
